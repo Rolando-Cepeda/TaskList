@@ -1,13 +1,16 @@
 package com.example.tasklist
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.tasklist.adapters.TaskAdapter
 import com.example.tasklist.data.Task
 import com.example.tasklist.data.TaskDAO
-
-
+import com.example.tasklist.databinding.ActivityMainBinding
 
 //Corresponde a una actividad principal (MainActivity)
 //de una aplicación de Android escrita en Kotlin.
@@ -24,55 +27,38 @@ import com.example.tasklist.data.TaskDAO
 //setContentView(R.layout.activity_main) establece el diseño de la actividad usando
 //el archivo de diseño activity_main.xml.
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
+    private lateinit var adapter: TaskAdapter
+    private lateinit var taskList: List<Task>
+
+    private lateinit var taskDAO: TaskDAO
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        //Se crea una instancia de TaskDAO pasando el contexto actual (this),
-        // que probablemente maneje operaciones de base de datos.
-        val taskDAO = TaskDAO(this)
+        taskDAO = TaskDAO(this)
 
-        // Se crea una nueva tarea (Task) con un ID de -1, el título
-        // "Comprar leche" y un estado de false (no completada).
-        var task = Task(-1, "Comprar leche", false)
-
-
-        // La tarea se inserta en la base de datos mediante el
-        // método insert del TaskDAO.
-        taskDAO.insert(task)
-
-        // Se registra la información de la tarea en el
-        // log con una etiqueta "DATABASE".
-        Log.i("DATABASE", task.toString())
-
-
-        // Se marca la tarea como completada (task.done = true).
-        //Se actualiza la tarea en la base de datos mediante el método update del TaskDAO.
-        //Se registra la información actualizada de la tarea en el log.
-        task.done = true
-        taskDAO.update(task)
-        Log.i("DATABASE", task.toString())
-
-
-        //Se busca la tarea en la base de datos usando su ID y se asigna a task.
-        //Se registra la información de la tarea recuperada en el log.
-        task = taskDAO.find(task.id)!!
-        Log.i("DATABASE", task.toString())
-
-        //Se elimina la tarea de la base de datos mediante el
-        // método delete del TaskDAO.
-        taskDAO.delete(task)
-
-
-        //Se recupera una lista de todas las tareas de la base de datos mediante el método findAll del TaskDAO.
-        //Se registra la lista de tareas en el log.
-        val taskList = taskDAO.findAll()
-        Log.i("DATABASE", taskList.toString())
-
-        //Se busca un botón en el diseño con el ID button y se le asigna un OnClickListener.
-        //Cuando el botón es presionado, se llama al método findAll del TaskDAO.
-        findViewById<Button>(R.id.button).setOnClickListener {
-            taskDAO.findAll()
+        adapter = TaskAdapter() {
+            Toast.makeText(this, "Click en tarea: ${taskList[it].name}", Toast.LENGTH_SHORT).show()
         }
+
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+
+        binding.addTaskButton.setOnClickListener {
+            val intent = Intent(this, TaskActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        taskList = taskDAO.findAll()
+
+        adapter.updateData(taskList)
     }
 }
