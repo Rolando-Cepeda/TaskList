@@ -4,4 +4,9 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="negative_red">#F44336</color>
+    <color name="orange_clean">#F1A93F</color>
+
+    <color name="checked_color">#F1A93F</color> <!-- Color para el estado marcado -->
+    <color name="unchecked_color">#FFFFFF</color> <!-- Color para el estado no marcado -->
+    <color name="background_api">#1CEBF3</color>
 </resources>

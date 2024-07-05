@@ -2,7 +2,9 @@ package com.example.tasklist.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.tasklist.R
 import com.example.tasklist.data.Task
 import com.example.tasklist.databinding.ItemTaskBinding
 
@@ -31,6 +33,12 @@ class TaskAdapter (
 
         holder.binding.doneCheckBox.setOnCheckedChangeListener { checkbox, _ ->
             if(checkbox.isPressed) {
+                // Cambia el fondo de la celda cuando se hace clic en el CheckBox
+                if (checkbox.isChecked) {
+                    holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.checked_color))
+                } else {
+                    holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.unchecked_color))
+                }
                 onItemCheckedClickListener(position)
             }
         }
