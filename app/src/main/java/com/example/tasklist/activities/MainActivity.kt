@@ -45,6 +45,11 @@ class MainActivity : AppCompatActivity() {
             taskDAO.delete(taskList[it])
             Toast.makeText(this, "Tarea borrada correctamente", Toast.LENGTH_SHORT).show()
             loadData()
+        }, {
+            val task = taskList[it]
+            task.done = !task.done
+            taskDAO.update(task)
+            loadData()
         })
 
         binding.recyclerView.adapter = adapter

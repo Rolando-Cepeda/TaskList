@@ -28,6 +28,8 @@ class TaskDAO(context: Context){
 
         val newRowId = db.insert(Task.TABLE_NAME, null, values)
         task.id = newRowId.toInt()
+
+        db.close()
     }
 
     //update actualiza una tarea existente en la base de datos.
@@ -46,6 +48,8 @@ class TaskDAO(context: Context){
             "${BaseColumns._ID} = ${task.id}",
             null
         )
+
+        db.close()
     }
 
     //delete elimina una tarea de la base de datos.
@@ -54,6 +58,8 @@ class TaskDAO(context: Context){
         val db = databaseManager.writableDatabase
 
         val deletedRows = db.delete(Task.TABLE_NAME, "${BaseColumns._ID} = ${task.id}", null)
+
+        db.close()
     }
 
     //find busca una tarea por su ID.
@@ -103,7 +109,7 @@ class TaskDAO(context: Context){
             null,                         // The values for the WHERE clause
             null,                            // don't group the rows
             null,                             // don't filter by row groups
-            null                             // The sort order
+            "${Task.COLUMN_NAME_DONE} ASC"                            // The sort order
         )
 
         var tasks = mutableListOf<Task>()
