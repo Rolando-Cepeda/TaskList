@@ -1,2 +1,2 @@
 # TaskList
-Creamos la 4º Aplicación
+4º Aplicación - Operaciones básicas de CRUD con SQLite
